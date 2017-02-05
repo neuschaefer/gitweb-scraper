@@ -31,7 +31,7 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 {
 	OFArray *args = [OFApplication arguments];
 	if ([args count] != 2) {
-		[of_stderr writeFormat: @"Usage: %@ <gitweb atom feed URL>"
+		[of_stderr writeFormat: @"Usage: %@ <gitweb base URL>"
 					@" <repo-name.git>\n",
 			[OFApplication programName]];
 		[OFApplication terminateWithStatus: 1];
@@ -40,8 +40,11 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 	_URL = [OFURL URLWithString: [args objectAtIndex: 0]];
 	_repo = [args objectAtIndex: 1];
 
-	of_log(@"Downloading feed from %@", _URL);
-	OFString *atom = [OFString stringWithContentsOfURL: _URL];
+	OFURL *feedURL = [_URL copy];
+	[feedURL setQuery: [OFString stringWithFormat: @"p=%@;a=atom", _repo]];
+	of_log(@"Downloading feed from %@", feedURL);
+
+	OFString *atom = [OFString stringWithContentsOfURL: feedURL];
 	OFXMLElement *XML = [OFXMLElement elementWithXMLString: atom];
 
 	OFArray *commits = [self extractCommits: XML];
