@@ -51,6 +51,7 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 	of_log(@"got %u commits", [commits count]);
 
 	OFString *destination = [_repo stringByDeletingPathExtension];
+	destination = [destination stringByAppendingString: @".patches"];
 	OFFileManager *FM = [OFFileManager defaultManager];
 	[FM createDirectoryAtPath: destination
 		    createParents: true];
