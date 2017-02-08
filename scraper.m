@@ -103,6 +103,7 @@ bool stringIsHex(OFString *string)
 		/* Find the h= parameter, which specifies the commit hash. */
 		of_range_t r = [query rangeOfString: @";h="
 				options: OF_STRING_SEARCH_BACKWARDS];
+		OF_ENSURE(r.location != OF_NOT_FOUND);
 
 		r.location += r.length;	/* after the ;h= */
 		r.length = 40;		/* the length of a SHA1 hash */
