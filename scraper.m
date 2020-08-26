@@ -40,7 +40,7 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 	_URL = [OFURL URLWithString: [args objectAtIndex: 0]];
 	_repo = [args objectAtIndex: 1];
 
-	OFMutableURL *feedURL = [_URL copy];
+	OFMutableURL *feedURL = [_URL mutableCopy];
 	[feedURL setQuery: [OFString stringWithFormat: @"p=%@;a=atom", _repo]];
 	of_log(@"Downloading feed from %@", feedURL);
 
@@ -129,7 +129,7 @@ bool stringIsHex(OFString *string)
 	 * http://example.org/gitweb/?p=repo.git;a=patch;h=da39a3ee5e6b4b0d3255bfef95601890afd80709
 	 */
 
-	OFMutableURL *URL = [_URL copy];
+	OFMutableURL *URL = [_URL mutableCopy];
 	[URL setQuery: [OFString stringWithFormat:
 		@"p=%@;a=patch;h=%@", _repo, commit]];
 
