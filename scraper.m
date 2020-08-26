@@ -40,7 +40,7 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 	_URL = [OFURL URLWithString: [args objectAtIndex: 0]];
 	_repo = [args objectAtIndex: 1];
 
-	OFURL *feedURL = [_URL copy];
+	OFMutableURL *feedURL = [_URL mutableCopy];
 	[feedURL setQuery: [OFString stringWithFormat: @"p=%@;a=atom", _repo]];
 	of_log(@"Downloading feed from %@", feedURL);
 
@@ -59,14 +59,14 @@ OF_APPLICATION_DELEGATE(GitwebScraper)
 
 	int i = 0;
 	for (OFString *commit in commits) {
-		OFDataArray *patch = [self patchForCommit: commit];
+		OFData *patch = [self patchForCommit: commit];
 		OFString *path = [OFString stringWithFormat: @"%08u-%@",
 			i++, commit];
 		path = [destination stringByAppendingPathComponent: path];
 		OFFile *file = [OFFile fileWithPath: path
 					       mode: @"wb"];
 
-		[file writeDataArray: patch];
+		[file writeData: patch];
 		[file close];
 	}
 
@@ -122,18 +122,18 @@ bool stringIsHex(OFString *string)
 	return commits;
 }
 
-- (OFDataArray *)patchForCommit: (OFString *)commit
+- (OFData *)patchForCommit: (OFString *)commit
 {
 	/*
 	 * Example URL:
 	 * http://example.org/gitweb/?p=repo.git;a=patch;h=da39a3ee5e6b4b0d3255bfef95601890afd80709
 	 */
 
-	OFURL *URL = [_URL copy];
+	OFMutableURL *URL = [_URL mutableCopy];
 	[URL setQuery: [OFString stringWithFormat:
 		@"p=%@;a=patch;h=%@", _repo, commit]];
 
 	of_log(@"Downloading patch from %@", [URL string]);
-	return [OFDataArray dataArrayWithContentsOfURL: URL];
+	return [OFData dataWithContentsOfURL: URL];
 }
 @end
